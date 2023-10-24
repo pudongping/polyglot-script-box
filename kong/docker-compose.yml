@@ -15,8 +15,15 @@ services:
       POSTGRES_USER: konguser
       POSTGRES_DB: kong
       POSTGRES_PASSWORD: kongpwd
+    volumes:
+      - /apps/kong/postgresql/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-V"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   # ---------------------
   # 执行数据库迁移
   # ---------------------
@@ -28,7 +35,7 @@ services:
     restart: on-failure
     environment:
       - KONG_DATABASE=postgres
-      - KONG_PG_DATABASE=konguser
+      - KONG_PG_USER=konguser
       - KONG_PG_PASSWORD=kongpwd
       - KONG_PG_HOST=kong-database
     links:
@@ -61,7 +68,7 @@ services:
     links:
       - kong-database
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://kong:8001"]
+      test: ["CMD", "curl", "http://kong:8001"]
       interval: 5s
       timeout: 2s
       retries: 15
