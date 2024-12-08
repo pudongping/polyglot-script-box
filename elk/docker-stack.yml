@@ -1,0 +1,45 @@
+services:
+  elasticsearch:
+    image: elasticsearch:7.9.3
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      #配置目录
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      #数据目录
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      #插件目录
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      # 设置为单节点（非集群模式）
+      discovery.type: single-node
+      # 账号
+      #ELASTIC_USERNAME: ""
+      # 密码
+      #ELASTIC_PASSWORD: ""
+      network.publish_host: _eth0_
+
+  logstash:
+    image: logstash:7.9.3
+    ports:
+      - "5044:5044"
+      - "5001:5000"
+      - "9600:9600"
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+  kibana:
+    image: kibana:7.9.3
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment:
+      #ELASTICSEARCH_USERNAME: ""
+      #ELASTICSEARCH_PASSWORD: ""
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"

@@ -1,0 +1,10 @@
+cluster.name: "alex-cluster"
+network.host: 0.0.0.0
+
+xpack.license.self_generated.type: trial
+#xpack.security.enabled: true
+xpack.monitoring.collection.enabled: true
+
+# 解决跨域问题
+http.cors.enabled: true
+http.cors.allow-origin: "*"
