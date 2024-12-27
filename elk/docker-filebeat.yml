@@ -1,0 +1,23 @@
+services:
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.9.3
+    volumes:
+      - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat/logs:/usr/share/filebeat/logs
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - KIBANA_HOST=kibana:5601
+#    depends_on:
+#      - elasticsearch
+#      - kibana
+    networks:
+      - elk_elk-network
+
+# 网络配置
+# 因为先启动的是 docker-stack.yml 并且它定义了 elk-network 网络
+# 又因为是在 elk 目录下使用 docker-compose up -d 启动的，所以会自动创建 elk_elk-network 网络
+# 我希望的是 filebeat 和 elk 服务使用同一个网络，所以这里使用外部网络 elk_elk-network
+networks:
+  elk_elk-network:
+    external: true # 使用外部网络

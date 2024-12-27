@@ -1,0 +1,13 @@
+# Filebeat 输入
+filebeat.inputs:
+  # 类型
+  - type: log
+    enabled: true
+    # 要抓取的文件路径
+    paths:
+    - /usr/share/filebeat/logs/*.log
+
+# Filebeat 输出
+output.logstash:
+  # Logstash 地址
+  hosts: ["logstash:5044"]
